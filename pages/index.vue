@@ -3,25 +3,18 @@
     <section class="intro">
       <h1>Get the latest news!!</h1>
     </section>
-    <section class="featured-posts">
+    
+    <app-posts-list />
 
-<!-- have to pass props -->
-      <app-post-preview />
-      <app-post-preview />
-      <app-post-preview />
-      <app-post-preview />
-      <app-post-preview />
-
-    </section>
   </div>
 </template>
 
 <script>
-import PostPreview from '~/components/Posts/PostPreview.vue'
+import PostsList from '~/components/Posts/PostsList.vue'
 
 export default {
   components: {
-    'app-post-preview': PostPreview
+      'app-posts-list': PostsList
   }
 }
 </script>
@@ -51,15 +44,6 @@ export default {
   .intro h1 {
     font-size: 2rem;
   }
-}
-
-.featured-posts {
-  display: flex;
-  padding: 20px;
-  box-sizing: border-box;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
 }
 
 </style>

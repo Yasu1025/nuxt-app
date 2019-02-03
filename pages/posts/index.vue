@@ -1,8 +1,18 @@
 <template>
     <div class="posts-page">
-        <h1>This is Posts page</h1>
+        <app-posts-list />
     </div>
 </template>
+
+<script>
+
+import PostsList from '~/components/Posts/PostsList.vue'
+export default {
+    components: {
+        'app-posts-list': PostsList
+    }
+}
+</script>
 
 
 <style scoped>
