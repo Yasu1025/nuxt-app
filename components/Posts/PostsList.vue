@@ -1,9 +1,12 @@
 <template>
     <section class="posts-list">
         <!-- have to pass props -->
-        <app-post-preview :is-admin = "isAdmin" />
-        <app-post-preview :is-admin = "isAdmin" />
-        <app-post-preview :is-admin = "isAdmin" />
+        <app-post-preview
+         v-for = "post in posts"
+         :key = "post.id"
+         :post = "post"
+         :is-admin = "isAdmin">
+         </app-post-preview>
     </section>
 </template>
 
@@ -18,6 +21,10 @@ export default {
         isAdmin: {
             type: Boolean,
             default: false
+        },
+        posts: {
+            type: Array,
+            required: true
         }
     }
 }

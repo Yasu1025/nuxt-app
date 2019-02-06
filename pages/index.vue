@@ -3,8 +3,7 @@
     <section class="intro">
       <h1>Get the latest news!!</h1>
     </section>
-    
-    <app-posts-list />
+    <app-posts-list :posts = "loadedPosts" />
 
   </div>
 </template>
@@ -15,6 +14,46 @@ import PostsList from '~/components/Posts/PostsList.vue'
 export default {
   components: {
       'app-posts-list': PostsList
+  },
+  data() {
+    return {
+      loadedPosts: []
+    }
+  },
+  asyncData(context) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          loadedPosts: [
+            {
+              id: "1",
+              title: "title1",
+              previewText: "Prev Text",
+              thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
+            },
+            {
+              id: "2",
+              title: "title2",
+              previewText: "Prev Text",
+              thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
+              
+            }
+          ]
+        })
+    }, 1000);
+    //reject(new Error())
+    })
+    .then(data => {
+      return data
+    })
+    .catch(e=> {
+        context.error(new Error())
+      }
+    )    
+    
+  },
+  created() {
+    
   }
 }
 </script>

@@ -1,12 +1,12 @@
 <template>
     <div class="single-post-page">
         <section class="post">
-            <h1 class="post-title">Title of the post {{ $route.params.id }}</h1>
+            <h1 class="post-title">{{ loadedPost.title }}</h1>
             <div class="post-details">
-                <div class="post-detail">Last updated on xxxx/xx/xx/</div>
-                <div class="post-detail">Written by xxxx</div>
+                <div class="post-detail">Last updated on {{ loadedPost.updatedDate }}</div>
+                <div class="post-detail">Written by {{ loadedPost.author }}</div>
             </div>
-            <p class="post-contents">Content of the post</p>
+            <p class="post-contents">{{ loadedPost.content }}</p>
         </section>
         <section class="post-feedback">
             <p>
@@ -15,6 +15,26 @@
         </section>
     </div>
 </template>
+
+<script>
+export default {
+    asyncData(context, callback) {
+        setTimeout(() => {
+            callback(null, {
+              loadedPost: {
+                id: "1",
+                title: "title1 ID: " + context.route.params.id,
+                previewText: "Prev Text",
+                author: "aaa",
+                updatedDate: new Date(),
+                content: "dummy",
+                thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
+              }
+            })
+        }, 1000);
+    }
+}
+</script>
 
 <style scoped>
 .single-post-page {
