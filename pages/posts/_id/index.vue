@@ -2,6 +2,7 @@
     <div class="single-post-page">
         <section class="post">
             <h1 class="post-title">{{ loadedPost.title }}</h1>
+            <img class="thumbnail" :src="loadedPost.thumbnail" alt="">
             <div class="post-details">
                 <div class="post-detail">Last updated on {{ loadedPost.updatedDate }}</div>
                 <div class="post-detail">Written by {{ loadedPost.author }}</div>
@@ -17,21 +18,16 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-    asyncData(context, callback) {
-        setTimeout(() => {
-            callback(null, {
-              loadedPost: {
-                id: "1",
-                title: "title1 ID: " + context.route.params.id,
-                previewText: "Prev Text",
-                author: "aaa",
-                updatedDate: new Date(),
-                content: "dummy",
-                thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
-              }
-            })
-        }, 1000);
+    asyncData(context) {
+        return axios.get(`https://nuxt-project-9df94.firebaseio.com/posts/${context.params.id}.json`)
+                    .then(res => {
+                      return {
+                        loadedPost: res.data
+                      }
+                    })
+                    .catch(e => context.error(e))
     }
 }
 </script>
@@ -52,6 +48,11 @@ export default {
     width: 600px;
     margin: auto;
   }
+}
+
+.thumbnail {
+  max-width: 50%;
+  margin: 0 auto 20px;
 }
 
 .post-title {

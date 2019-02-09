@@ -1,4 +1,5 @@
 import Vuex from 'vuex'
+import axios from 'axios'
 import * as TYPE from './mutationsType'
 
 const createStore = () => {
@@ -9,33 +10,48 @@ const createStore = () => {
         mutations: {
             [TYPE.SET_POSTS](state, payload) {
                 state.loadedPosts = payload
+            },
+            [TYPE.ADD_POSTS](state, payload) {
+                state.loadedPosts.push(payload)
+            },
+            [TYPE.EDIT_POSTS](state, payload) {
+                const postIndex = state.loadedPosts.findIndex(post => post.id === payload.id)
+                state.loadedPosts[postIndex] = payload
             }
         },
         actions: {
+            // work on server
             nuxtServerInit({ commit }, context) {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        commit(TYPE.SET_POSTS, [
-                            {
-                                id: "1",
-                                title: "title1",
-                                previewText: "Prev Text",
-                                thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
-                            },
-                            {
-                                id: "2",
-                                title: "title2",
-                                previewText: "Prev Text",
-                                thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
-                                
-                            }
-                        ])
-                    resolve()
-                  }, 1000);
-                })
+                return axios.get('https://nuxt-project-9df94.firebaseio.com/posts.json')
+                            .then(res => {
+                                const postsArray = []
+                                for(const key in res.data) {
+                                    postsArray.push({...res.data[key], id: key})
+                                }
+                                commit(TYPE.SET_POSTS, postsArray)
+                            })
+                            .catch(e => context.error(e))
             },
             setPosts({ commit }, payload) {
                 commit(TYPE.SET_POSTS, payload)
+            },
+            addPost({ commit }, payload) {
+                const createdPost = {
+                    ...payload,
+                    updatedDate: new Date()
+                }
+                return axios.post('https://nuxt-project-9df94.firebaseio.com/posts.json', createdPost)
+                    .then(result => {
+                        commit(TYPE.ADD_POSTS, {...createdPost, id: result.data.name})
+                    })
+                    .catch(e => console.log(e))
+            },
+            editPost({ commit }, payload) {
+                axios.put(`https://nuxt-project-9df94.firebaseio.com/posts/${payload.id}.json`, payload)
+                 .then(res => {
+                     commit(TYPE.EDIT_POSTS, payload)
+                 })
+                 .catch(e => console.log(e))
             }
         },
         getters: {
