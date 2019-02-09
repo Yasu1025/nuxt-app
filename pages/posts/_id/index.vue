@@ -4,7 +4,7 @@
             <h1 class="post-title">{{ loadedPost.title }}</h1>
             <img class="thumbnail" :src="loadedPost.thumbnail" alt="">
             <div class="post-details">
-                <div class="post-detail">Last updated on {{ loadedPost.updatedDate }}</div>
+                <div class="post-detail">Last updated on {{ loadedPost.updatedDate | date }}</div>
                 <div class="post-detail">Written by {{ loadedPost.author }}</div>
             </div>
             <p class="post-contents">{{ loadedPost.content }}</p>
@@ -18,10 +18,9 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     asyncData(context) {
-        return axios.get(`https://nuxt-project-9df94.firebaseio.com/posts/${context.params.id}.json`)
+        return context.app.$axios.get(`/posts/${context.params.id}.json`)
                     .then(res => {
                       return {
                         loadedPost: res.data

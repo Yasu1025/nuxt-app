@@ -22,7 +22,7 @@ const createStore = () => {
         actions: {
             // work on server
             nuxtServerInit({ commit }, context) {
-                return axios.get('https://nuxt-project-9df94.firebaseio.com/posts.json')
+                return context.app.$axios.get('/posts.json')
                             .then(res => {
                                 const postsArray = []
                                 for(const key in res.data) {
@@ -40,14 +40,14 @@ const createStore = () => {
                     ...payload,
                     updatedDate: new Date()
                 }
-                return axios.post('https://nuxt-project-9df94.firebaseio.com/posts.json', createdPost)
+                return this.$axios.post('/posts.json', createdPost)
                     .then(result => {
                         commit(TYPE.ADD_POSTS, {...createdPost, id: result.data.name})
                     })
                     .catch(e => console.log(e))
             },
             editPost({ commit }, payload) {
-                axios.put(`https://nuxt-project-9df94.firebaseio.com/posts/${payload.id}.json`, payload)
+                this.$axios.put(`/posts/${payload.id}.json`, payload)
                  .then(res => {
                      commit(TYPE.EDIT_POSTS, payload)
                  })

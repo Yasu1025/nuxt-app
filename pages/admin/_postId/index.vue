@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import AdminPostForm from '~/components/Admin/AdminPostForm.vue'
 
 export default {
@@ -16,7 +15,7 @@ export default {
         AdminPostForm
     },
     asyncData(context) {
-        return axios.get(`https://nuxt-project-9df94.firebaseio.com/posts/${context.params.postId}.json`)
+        return context.app.$axios.get(`/posts/${context.params.postId}.json`)
                     .then(res => {
                       return {
                         loadedPost: {...res.data, id: context.params.postId}

@@ -11,20 +11,15 @@
 </template>
 
 <script>
-import PostsList from '~/components/Posts/PostsList.vue'
-import AppButton from '~/components/UI/AppButton.vue'
-
-
 export default {
     layout: 'admin',
-    components: {
-        'app-posts-list': PostsList,
-        AppButton
-    },
     computed: {
         loadedPosts() {
             return this.$store.getters.loadedPosts
         }
+    },
+    head: {
+        title: 'Admin | Nuxt BLOG'
     }
 }
 </script>

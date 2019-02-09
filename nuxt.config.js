@@ -7,7 +7,8 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    // title: pkg.name,
+    title: 'NUXT BLOG',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -15,32 +16,46 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto'}
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto'},
     ]
   },
 
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#FFFFFF' },
+  // loading: { color: 'orangered' },
+  loading: false,
+  loadingIndicator: {
+    name: 'circle',
+    color: 'orangered'
+  },
+
 
   /*
   ** Global CSS
   */
   css: [
+    '~assets/styles/main.css'
   ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~plugins/core-components.js',
+    '~plugins/date-filter.js'
   ],
 
   /*
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/axios'
   ],
+  axios: {
+    baseURL: process.env.BASE_URL || 'https://nuxt-project-9df94.firebaseio.com',
+    credentials: false
+  },
 
   /*
   ** Build configuration
@@ -52,5 +67,24 @@ module.exports = {
     extend(config, ctx) {
       
     }
+  },
+  env: {
+    baseUrl: process.env.BASE_URL || 'https://nuxt-project-9df94.firebaseio.com'
+  },
+  //rootDir: '/admin',
+  // router: {
+  //   //base: '/my-app/',
+  //   extendRoutes(routes) {
+  //     routes.push({
+  //       path: '*',
+  //       component: resolve(__direname, 'pages/index.vue')
+  //     })
+  //   },
+  //   linkActiveClass: 'tetetete'
+  // }
+  //srcDir: 'client-app/'
+  transition: {
+    name: 'fade',
+    mode: 'out-in'
   }
 }
