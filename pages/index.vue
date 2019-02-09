@@ -15,46 +15,11 @@ export default {
   components: {
       'app-posts-list': PostsList
   },
-  data() {
-    return {
-      loadedPosts: []
+  computed: {
+        loadedPosts() {
+            return this.$store.getters.loadedPosts
+        }
     }
-  },
-  asyncData(context) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          loadedPosts: [
-            {
-              id: "1",
-              title: "title1",
-              previewText: "Prev Text",
-              thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
-            },
-            {
-              id: "2",
-              title: "title2",
-              previewText: "Prev Text",
-              thumbnail: "http://www.logo-asia.com/images/logo_design/loop_logo.jpg",
-              
-            }
-          ]
-        })
-    }, 1000);
-    //reject(new Error())
-    })
-    .then(data => {
-      return data
-    })
-    .catch(e=> {
-        context.error(new Error())
-      }
-    )    
-    
-  },
-  created() {
-    
-  }
 }
 </script>
 
