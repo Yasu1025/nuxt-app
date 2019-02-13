@@ -69,7 +69,8 @@ module.exports = {
     }
   },
   env: {
-    baseUrl: process.env.BASE_URL || 'https://nuxt-project-9df94.firebaseio.com'
+    baseUrl: process.env.BASE_URL || 'https://nuxt-project-9df94.firebaseio.com',
+    fbApiKey: 'AIzaSyBY-qVGmJsAWRU7YpHEq-LnhrwdX3bl79o'
   },
   //rootDir: '/admin',
   // router: {
