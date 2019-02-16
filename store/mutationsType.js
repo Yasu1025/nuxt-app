@@ -1,3 +1,5 @@
 export const SET_POSTS = 'SET_POSTS'
 export const ADD_POSTS = 'ADD_POSTS'
 export const EDIT_POSTS = 'EDIT_POSTS'
+export const SET_TOKEN = 'SET_TOKEN'
+export const CLEAR_TOKEN = 'CLEAR_TOKEN'

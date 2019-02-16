@@ -5,7 +5,8 @@ import * as TYPE from './mutationsType'
 const createStore = () => {
     return new Vuex.Store({
         state: {
-            loadedPosts: []
+            loadedPosts: [],
+            token: null
         },
         mutations: {
             [TYPE.SET_POSTS](state, payload) {
@@ -17,6 +18,12 @@ const createStore = () => {
             [TYPE.EDIT_POSTS](state, payload) {
                 const postIndex = state.loadedPosts.findIndex(post => post.id === payload.id)
                 state.loadedPosts[postIndex] = payload
+            },
+            [TYPE.SET_TOKEN](state, payload) {
+                state.token = payload
+            },
+            [TYPE.CLEAR_TOKEN](state) {
+                state.token = null
             }
         },
         actions: {
@@ -35,27 +42,64 @@ const createStore = () => {
             setPosts({ commit }, payload) {
                 commit(TYPE.SET_POSTS, payload)
             },
-            addPost({ commit }, payload) {
+            addPost(VuexContext, payload) {
                 const createdPost = {
                     ...payload,
                     updatedDate: new Date()
                 }
-                return this.$axios.post('/posts.json', createdPost)
+                return this.$axios.post(`/posts.json?auth=${VuexContext.state.token}`, createdPost)
                     .then(result => {
-                        commit(TYPE.ADD_POSTS, {...createdPost, id: result.data.name})
+                        VuexContext.commit(TYPE.ADD_POSTS, {...createdPost, id: result.data.name})
                     })
                     .catch(e => console.log(e))
             },
-            editPost({ commit }, payload) {
-                this.$axios.put(`/posts/${payload.id}.json`, payload)
+            editPost(VuexContext, payload) {
+                this.$axios.put(`/posts/${payload.id}.json?auth=${VuexContext.state.token}`, payload)
                  .then(res => {
-                     commit(TYPE.EDIT_POSTS, payload)
+                    VuexContext.commit(TYPE.EDIT_POSTS, payload)
                  })
                  .catch(e => console.log(e))
+            },
+            authenticateUser( VuexContext, payload) {
+                let authURL = ""
+                if(!payload.isLogin) {
+                  authURL = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${process.env.fbApiKey}`
+                } else {
+                  authURL = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${process.env.fbApiKey}`
+                }
+                return this.$axios.post(authURL, {
+                    email: payload.email,
+                    password: payload.password,
+                    returnSecureToken: true
+                  })
+                  .then(result => {
+                      console.log(result)
+                      VuexContext.commit(TYPE.SET_TOKEN, result.data.idToken)
+                      localStorage.setItem('myToken', result.data.idToken)
+                      localStorage.setItem('tokenExpire', new DataCue().getTime() + 3000000)
+                      VuexContext.dispatch('setLogoutTimer', 3000000)
+                  })
+                  .catch(e => console.log(e))
+            },
+            setLogoutTimer( { commit }, duration) {
+                setTimeout(() => {
+                    commit(TYPE.CLEAR_TOKEN)
+                }, duration);
+            },
+            initAuth(VuexContext) {
+                const myToken = localStorage.getItem('myToken')
+                const expireDate = localStorage.getItem('tokenExpire')
+
+                if(new Date() > expireDate || !myToken) {
+                    return
+                }
+                VuexContext.dispatch('setLogoutTimer', 3000000)
+                VuexContext.commit(TYPE.SET_TOKEN, myToken)
             }
         },
         getters: {
-            loadedPosts(state) { return state.loadedPosts }
+            loadedPosts(state) { return state.loadedPosts },
+            isAuthenticate(state) { return state.token != null }
         }
     })
 }
